@@ -1680,17 +1680,70 @@
     }, 350);
   }
 
-  async function submitContactForm() {
-    const name    = document.getElementById('cfName').value.trim();
-    const email   = document.getElementById('cfEmail').value.trim();
-    const subject = document.getElementById('cfSubject').value.trim();
-    const message = document.getElementById('cfMessage').value.trim();
-    const errEl   = document.getElementById('cfError');
-    const btn     = document.getElementById('cfSubmitBtn');
+ async function submitContactForm() {
+  const name = document.getElementById('cfName').value.trim();
+  const email = document.getElementById('cfEmail').value.trim();
+  const subject = document.getElementById('cfSubject').value.trim();
+  const message = document.getElementById('cfMessage').value.trim();
 
-    // Validation
-    errEl.style.display = 'none';
-    if (!name)    { showCfError('Please enter your name.'); return; }
+  const errEl = document.getElementById('cfError');
+  const btn = document.getElementById('cfSubmitBtn');
+
+  errEl.style.display = 'none';
+
+  if (!name) {
+    showCfError('Please enter your name.');
+    return;
+  }
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showCfError('Please enter a valid email address.');
+    return;
+  }
+
+  if (!message) {
+    showCfError('Please write a message.');
+    return;
+  }
+
+  btn.disabled = true;
+  document.getElementById('cfBtnText').textContent = 'Sending...';
+  document.getElementById('cfBtnArrow').textContent = '';
+
+  try {
+    const res = await fetch(
+      'https://formsubmit.co/ajax/Aniketmore.In@gmail.com',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          subject: subject || 'New project enquiry',
+          message
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById('cfForm').style.display = 'none';
+      document.getElementById('cfSuccess').style.display = 'block';
+    } else {
+      throw new Error('Send failed');
+    }
+
+  } catch(e) {
+    btn.disabled = false;
+    document.getElementById('cfBtnText').textContent = 'Send Message';
+    document.getElementById('cfBtnArrow').textContent = '→';
+    showCfError('Something went wrong.');
+  }
+ { showCfError('Please enter your name.'); return; }
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showCfError('Please enter a valid email address.'); return; }
     if (!message) { showCfError('Please write a message.'); return; }
 
