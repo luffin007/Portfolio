@@ -1700,24 +1700,29 @@
     document.getElementById('cfBtnArrow').textContent = '';
 
     try {
-      const res = await fetch('https://formsubmit.co/ajax/Aniketmore.In@gmail.com', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          name, email,
-          subject: subject || 'New project enquiry',
-          message,
-          _captcha: 'false',
-          _template: 'table'
-        })
-      });
+  const res = await fetch('https://formsubmit.co/ajax/Aniketmore.In@gmail.com',
+{
+    method:'POST',
+    headers:{
+        'Content-Type':'application/json',
+        'Accept':'application/json'
+    },
+    body: JSON.stringify({
+        name:name,
+        email:email,
+        subject:subject || 'New project enquiry',
+        message:message
+    })
+});
 
-      const data = await res.json();
-      if (data.success === 'true' || data.success === true) {
-        document.getElementById('cfForm').style.display = 'none';
-        document.getElementById('cfSuccess').style.display = 'block';
-      } else {
-        throw new Error('Send failed');
+const data = await res.json();
+
+if(data.success){
+    document.getElementById('cfForm').style.display='none';
+    document.getElementById('cfSuccess').style.display='block';
+}else{
+    throw new Error('Send failed');
+}
       }
     } catch(e) {
       btn.disabled = false;
